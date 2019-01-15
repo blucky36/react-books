@@ -78,6 +78,7 @@ class App extends Component {
   }
 
   onSearch(bookId){
+    if(isNaN(Number(bookId)))return
     let found = this.state.apiBooks.find((book)=> Number(bookId) === book.id)
     let index = this.state.apiBooks.indexOf(found)
     this.setState({...this.state, apiBooks:[found,...this.state.apiBooks.slice(0,index),...this.state.apiBooks.slice(index+1)]})
