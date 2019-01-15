@@ -77,13 +77,25 @@ class App extends Component {
     console.log("by ID", byId)
   }
 
+  onSearch(bookId){
+    let found = this.state.apiBooks.find((book)=> Number(bookId) === book.id)
+    let index = this.state.apiBooks.indexOf(found)
+    this.setState({...this.state, apiBooks:[found,...this.state.apiBooks.slice(0,index),...this.state.apiBooks.slice(index+1)]})
+    console.log(found)
+  }
+
   render() {
     return (
       <div className="App">
           <main className = "container">
             <h1>Blake's Book Store</h1>
             <div className = "row">
-              <div className = "col-md-3"></div>
+              <div className = "col-md-3">
+                <form onSubmit = {(e)=>{e.preventDefault();this.onSearch(document.querySelector("#searchbar").value)}}>
+                  <input id = "searchbar" className = "form-control" placeholder = "search for book by bookId 1-8"/>
+                  <input type="submit" value = "search" className = "btn btn-success"/>
+                </form>
+              </div>
               <div className = "col-md-6">
                 <div className = "form-group">
                   <form onSubmit = {this.onCritSubmit}>
