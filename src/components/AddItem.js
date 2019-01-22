@@ -1,16 +1,14 @@
 import React, {Component} from "react"
 
 class AddItem extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {quantity: 1,productID: this.props.products[0].id}
-  }
+
+  state = {quantity:1,productID:1}
 
   onSubmit = (e) => {
     e.preventDefault()
     const {quantity, productID} = this.state
     const product = this.props.products.find(product => product.id === productID)
-    this.props.onAddItem({product})
+    this.props.onAddItem(product)
   }
 
   onChange = (e) => {

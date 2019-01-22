@@ -2,7 +2,7 @@ import React from "react"
 
 const formatValue = (cil) => {
   let total = 0
-  cil.forEach((item)=>total+=item.product.price)
+  cil.forEach((item)=>total+=(item.price*item.quantity))
   return `$${total}.00`
 }
 

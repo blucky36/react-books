@@ -1,33 +1,31 @@
 import React, { Component } from "react"
 import AllBooks from "./components/allBooks.js"
 import AddItem from "./components/AddItem.js"
-import Total from "./components/total.js"
 import Cart from "./components/cart.js"
-import productsArray from "./productsArray.js"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "./App.css"
 import { NyanScrollBar } from "react-nyan-stroller"
 
 class App extends Component {
-  constructor(props){
-    super(props)
-    this.state = {apiBooks:[],cartItems:[],products:productsArray,sortAs:"id"}
-  }
+
+  state = {apiBooks:[],cartItems:[],sortAs:"id"}
 
   async componentDidMount(){
     const apiBooks = await fetch(`${process.env.REACT_APP_API_URL}/api/books`).then((data)=>data.json())
     this.setState({...this.state,apiBooks})
   }
 
-  onAddItem = ({product}) => {
-    const nextID = this.state.cartItems.reduce((a,i) => {
-      return Math.max(a, i.id)
-    }, 0) + 1
+  onAddItem = async (product) => {
+    const nextID = this.state.cartItems.reduce((a,i) => {return Math.max(a, i.id)}, 0) + 1
     const newItem = {product,id:nextID}
     const newItems = [...this.state.cartItems, newItem]
 
+      // let apiBooks = await fetch(`http://localhost:8082/api/books/cart/add/${product.id}`, {method: 'PATCH',headers: {'Accept': 'application/json','Content-Type': 'application/json',}}).then(data=>data.json())
+      // console.log(apiBooks);
+
     this.setState({
       ...this.state,
+      // apiBooks,
       cartItems: newItems
     })
   }
@@ -43,8 +41,6 @@ class App extends Component {
   onCritSubmit = (e) => {
     e.preventDefault()
     let value = this.state.sortAs
-    console.log(this.state.sortAs)
-    console.log(this.state.apiBooks);
     let byTitle = this.state.apiBooks.slice(0)
     let byAuthor = this.state.apiBooks.slice(0)
     let byId = this.state.apiBooks.slice(0)
@@ -72,9 +68,6 @@ class App extends Component {
     if(value === "id"){
       this.onSortBy(byId,"id")
     }
-    console.log("by Author",byAuthor)
-    console.log("by title",byTitle)
-    console.log("by ID", byId)
   }
 
   onSearch(bookId){
@@ -82,7 +75,6 @@ class App extends Component {
     let found = this.state.apiBooks.find((book)=> Number(bookId) === book.id)
     let index = this.state.apiBooks.indexOf(found)
     this.setState({...this.state, apiBooks:[found,...this.state.apiBooks.slice(0,index),...this.state.apiBooks.slice(index+1)]})
-    console.log(found)
   }
 
   render() {
@@ -112,11 +104,10 @@ class App extends Component {
               </div>
               <div className = "col-md-3"></div>
             </div>
-            <AllBooks transferState={this.state}/>
+            <AllBooks apiBooks={this.state.apiBooks}/>
             <h1>My Shopping Cart</h1>
             <Cart items={this.state.cartItems}/>
-            <Total items = {this.state.cartItems}/>
-            <AddItem products={this.state.products} onAddItem = {this.onAddItem}/>
+            <AddItem products={this.state.apiBooks} onAddItem = {this.onAddItem}/>
           </main>
         <NyanScrollBar draggable targetAxis="horizontal" />
         <NyanScrollBar draggable targetAxis="vertical" />
